@@ -1,0 +1,77 @@
+name = "stm32f746g_disco"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Olivier Henley"]
+maintainers = ["Olivier Henley <olivier.henley@gmail.com>"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+[[depends-on]]
+stm32f746 = "*"
+gnat_arm_elf = "^15"
+light_tasking_stm32f746 = "*"
+
+[[pins]]
+stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "main" }
+light_tasking_stm32f746 = { path = "/home/henley/Desktop/embedded_ada/stm32f7_workspace/stm32f746-runtimes/install/light-tasking-stm32f746/" }
+
+[configuration.values]
+# ----------------------------------------------------------------------------
+# STM32F746G-DISCO clock configuration
+#
+# INVARIANT: the stm32f746.* and light_tasking_stm32f746.* values below
+# describe the same physical clocking and MUST stay in sync. The stm32f746
+# crate uses them to compute peripheral clocks (Clock_Tree); the runtime
+# uses them to configure SysTick and the PLL at startup.
+#
+# Source: HSI (internal 16 MHz RC), no external HSE used.
+# Reason: startup does not block waiting for ST-Link MCO / external crystal,
+# mirroring the Nucleo-G431KB philosophy. These also happen to be the
+# light_tasking_stm32f746 runtime defaults, but we set both sides explicitly
+# so the sync is visible rather than implied.
+#
+# PLL math (F746: SYSCLK from PLL *P* output):
+#   HSI / PLL_M_Div   = 16 MHz / 16  =  1 MHz  (VCO input, must be 1..2 MHz)
+#   1 MHz * PLL_N_Mul = 1 MHz * 432  = 432 MHz (VCO out, must be 100..432 MHz)
+#   VCO / PLL_P_Div   = 432 MHz / 2  = 216 MHz (SYSCLK, F746 max)
+#
+# Bus clocks (F746 APB ceilings: APB1 <= 54 MHz, APB2 <= 108 MHz):
+#   HCLK  = SYSCLK / AHB_Pre  = 216 MHz / 1 = 216 MHz
+#   PCLK1 = HCLK   / APB1_Pre = 216 MHz / 4 =  54 MHz   (I2C/SPI2-3/USART2-3/UART4)
+#   PCLK2 = HCLK   / APB2_Pre = 216 MHz / 2 = 108 MHz   (SPI1/USART1)
+#
+# NOTE: PCLK1 = 54 MHz is the value the stm32f746 I2C driver's TIMINGR
+# table is keyed on. Changing the prescalers below WILL break I2C timing
+# unless a matching TIMINGR row is added (Timing_For raises otherwise).
+# ----------------------------------------------------------------------------
+
+# Clock source: PLL P output (HSI-driven)
+light_tasking_stm32f746.SYSCLK_Src = "PLLCLK"
+light_tasking_stm32f746.PLL_Src    = "HSI"
+stm32f746.SYSCLK_Src               = "PLLCLK"
+
+# HSE frequency (unused with HSI source, declared for completeness)
+stm32f746.HSE_Hz = 0
+
+# PLL math (M=16, N=432, P=DIV2 -> 216 MHz; matches runtime defaults)
+light_tasking_stm32f746.PLL_M_Div = 16
+light_tasking_stm32f746.PLL_N_Mul = 432
+light_tasking_stm32f746.PLL_P_Div = "DIV2"
+stm32f746.PLL_M_Div               = 16
+stm32f746.PLL_N_Mul               = 432
+stm32f746.PLL_P_Div               = "DIV2"
+
+# PLL Q output (runtime-only; 48 MHz for USB/SDIO/RNG). The stm32f746
+# config crate has no PLL_Q knob, so this side is set only on the runtime.
+light_tasking_stm32f746.PLL_Q_Div    = 9
+light_tasking_stm32f746.PLL_Q_Enable = true
+
+# Bus prescalers (APB1 must divide to stay <= 54 MHz; matches runtime defaults)
+light_tasking_stm32f746.AHB_Pre  = "DIV1"
+light_tasking_stm32f746.APB1_Pre = "DIV4"
+light_tasking_stm32f746.APB2_Pre = "DIV2"
+stm32f746.AHB_Pre                = "DIV1"
+stm32f746.APB1_Pre               = "DIV4"
+stm32f746.APB2_Pre               = "DIV2"

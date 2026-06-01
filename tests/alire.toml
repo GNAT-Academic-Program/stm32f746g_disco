@@ -1,0 +1,13 @@
+name = "stm32f746g_disco_tests"
+description = "Tests for the built-in Alire test runner"
+version = "0.0.0-test"
+
+[[depends-on]]
+stm32f746g_disco = "*"
+
+[[pins]]
+stm32f746g_disco = { path = ".." }
+
+[build-profiles]
+stm32f746g_disco       = "validation"
+stm32f746g_disco_tests = "validation"
