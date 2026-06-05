@@ -15,7 +15,7 @@ light_tasking_stm32f746 = "*"
 
 [[pins]]
 stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "main" }
-light_tasking_stm32f746 = { path = "/home/henley/Desktop/embedded_ada/stm32f7_workspace/stm32f746-runtimes/install/light-tasking-stm32f746/" }
+light_tasking_stm32f746 = { url = "https://github.com/GNAT-Academic-Program/light-tasking-stm32f746.git", branch = "main" }
 
 [configuration.values]
 # ----------------------------------------------------------------------------
