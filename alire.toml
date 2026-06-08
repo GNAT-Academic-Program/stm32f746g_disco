@@ -14,7 +14,8 @@ gnat_arm_elf = "^15"
 light_tasking_stm32f746 = "*"
 
 [[pins]]
-stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "main" }
+stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "tut/04-volatile" }
+#stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "main" }
 light_tasking_stm32f746 = { url = "https://github.com/GNAT-Academic-Program/light-tasking-stm32f746.git", branch = "main" }
 
 [configuration.values]
@@ -75,3 +76,6 @@ light_tasking_stm32f746.APB2_Pre = "DIV2"
 stm32f746.AHB_Pre                = "DIV1"
 stm32f746.APB1_Pre               = "DIV4"
 stm32f746.APB2_Pre               = "DIV2"
+
+[[depends-on]]
+gnatprove = "^15.1.0"

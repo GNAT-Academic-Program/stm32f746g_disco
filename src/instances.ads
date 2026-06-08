@@ -15,7 +15,7 @@ package Instances is
 
    --  I2C1: Arduino header D15/D14 + CN2 extension (SCL=PB8, SDA=PB9, AF4).
    package I2C_1 is new STM32F746_I2C
-     (Periph     => STM32F746.I2C.I2C1_Periph'Access,
+     (Base       => STM32F746.I2C.I2C1_Periph'Address,
       Get_Clock  => Clock_Tree.Get_I2C1_Clock,
       RCC_Enable => Clock_Tree.Enable_I2C1,
       RCC_Reset  => Clock_Tree.Reset_I2C1);
