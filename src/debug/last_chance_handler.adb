@@ -1,6 +1,5 @@
 with Board;
 with Gpio;
-with Usart_Types;
 with System; use System;
 with System.Storage_Elements; use System.Storage_Elements;
 
@@ -9,15 +8,13 @@ package body Last_Chance_Handler is
    procedure Last_Chance_Handler (Msg : System.Address; Line : Integer) is
 
       procedure Console_Write (S : String) is
-         Buf     : Storage_Array (1 .. Storage_Offset (S'Length));
-         J       : Storage_Offset := Buf'First;
          Written : Storage_Offset;
+         Buf     : Storage_Array (1 .. S'Length);
       begin
-         for C of S loop
-            Buf (J) := Storage_Element (Character'Pos (C));
-            J := J + 1;
+         for I in S'Range loop
+            Buf (Storage_Offset (I - S'First + 1)) := Storage_Element (Character'Pos (S (I)));
          end loop;
-         Board.Console.Write (Board.Console_Dev, Buf, Written);
+         Board.Console.Write (Buf, Written);
       end Console_Write;
 
       function Msg_String return String is
@@ -43,15 +40,6 @@ package body Last_Chance_Handler is
       end Msg_String;
 
    begin
-      Board.Initialize;
-      Board.Console.Open
-        (Board.Console_Dev,
-         (Baud      => Usart_Types.B115200,
-          Data_Bits => Usart_Types.Data_8,
-          Parity    => Usart_Types.None,
-          Stop_Bits => Usart_Types.Stop_1,
-          Flow      => Usart_Types.None));
-
       Console_Write ("CRASH at line ");
       Console_Write (Integer'Image (Line));
       Console_Write (": ");

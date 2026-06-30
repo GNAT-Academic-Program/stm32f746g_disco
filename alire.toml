@@ -12,11 +12,20 @@ tags = []
 stm32f746 = "*"
 gnat_arm_elf = "^15"
 light_tasking_stm32f746 = "*"
+is42s32400f = "*"
+sdram_generic = "*"
+fb_generic = "*"
+touch_generic = "*"
+ft5336 = "*"
 
 [[pins]]
-stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "tut/04-volatile" }
 #stm32f746 = { url = "https://github.com/GNAT-Academic-Program/stm32f746_ghal.git", branch = "main" }
 light_tasking_stm32f746 = { url = "https://github.com/GNAT-Academic-Program/light-tasking-stm32f746.git", branch = "main" }
+is42s32400f = { path = "../is42s32400f" }
+sdram_generic = { path = "../sdram_generic" }
+fb_generic = { path = "../fb_generic" }
+touch_generic = { path = "../touch_generic" }
+ft5336 = { path = "../ft5336" }
 
 [configuration.values]
 # ----------------------------------------------------------------------------
@@ -79,3 +88,6 @@ stm32f746.APB2_Pre               = "DIV2"
 
 [[depends-on]]
 gnatprove = "^15.1.0"
+
+[[pins]]
+stm32f746 = { path='../stm32f746' }
